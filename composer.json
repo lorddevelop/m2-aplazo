@@ -1,0 +1,19 @@
+{
+    "name": "spro/aplazopaymemt",
+    "description": "AplazoPaymemt for Magento 2",
+    "type": "magento2-module",
+    "version": "dev-master",
+    "license": [
+        "OSL-3.0"
+    ],
+    "extra": {
+        "map": [
+            [
+                "*",
+                "Spro/AplazoPaymemt"
+            ]
+        ]
+    }
+}
+
+
