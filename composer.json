@@ -1,6 +1,6 @@
 {
-    "name": "spro/aplazopaymemt",
-    "description": "AplazoPaymemt for Magento 2",
+    "name": "spro/aplazopayment",
+    "description": "AplazoPayment for Magento 2",
     "type": "magento2-module",
     "version": "dev-master",
     "license": [
@@ -10,7 +10,7 @@
         "map": [
             [
                 "*",
-                "Spro/AplazoPaymemt"
+                "Spro/AplazoPayment"
             ]
         ]
     }

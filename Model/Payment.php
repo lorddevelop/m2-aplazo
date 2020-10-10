@@ -1,16 +1,12 @@
 <?php
 
-namespace Spro\AplazoPaymemt\Model;
+namespace Spro\AplazoPayment\Model;
 
 use Magento\Checkout\Model\Session;
 
-/**
- * Class Payment
- * @package Avve\AvvePayment\Model
- */
 class Payment extends \Magento\Payment\Model\Method\AbstractMethod
 {
-	const CODE								=	'avve_payment';
+	const CODE								=	'aplazo_payment';
 
 	/**
 	 * @var \Psr\Log\LoggerInterface
