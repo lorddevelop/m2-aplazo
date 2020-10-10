@@ -6,6 +6,12 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 
 class Config
 {
+
+    const APLAZO_STAGE_LINK ='https://aplazo-back-stage.scenario-projects.com/';
+    const APLAZO_PREPROD_LINK = 'https://aplazo-back-preprod.scenario-projects.com/';
+    const APLAZO_PROD_LINK = 'https://api.aplazo.mx/';
+
+
     /**
      * config path for active
      */

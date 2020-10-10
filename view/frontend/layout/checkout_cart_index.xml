@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="checkout.cart.methods">
+            <block
+                    class="Spro\AplazoPayment\Block\Product\View"
+                    name="spro.aplazopayment.checkout.logo"
+                    after="checkout.cart.methods.onepage.bottom"
+                    template="Spro_AplazoPayment::product/view/gallery.phtml"
+                    ifconfig="payment/aplazo_payment/show_on_cart"
+            />
+            <block
+                    class="Spro\AplazoPayment\Block\Product\View"
+                    name="spro.aplazopayment.checkout.button"
+                    after="spro.aplazopayment.checkout.logo"
+                    template="Spro_AplazoPayment::product/view/buy_with_avve_checkout.phtml"
+                    ifconfig="payment/aplazo_payment/show_on_cart"
+            />
+        </referenceContainer>
+    </body>
+</page>
