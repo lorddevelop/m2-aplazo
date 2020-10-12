@@ -38,16 +38,6 @@ class View extends Template
 	 */
 	public function getRedirectUrl()
 	{
-		$mode = $this->config->getMode();
-		if ($mode==\Spro\AplazoPayment\Model\Config\Source\Mode::STAGE){
-		    return \Spro\AplazoPayment\Model\Config::APLAZO_STAGE_LINK;
-        }
-        if ($mode==\Spro\AplazoPayment\Model\Config\Source\Mode::PREPROD){
-            return \Spro\AplazoPayment\Model\Config::APLAZO_PREPROD_LINK;
-        }
-        if ($mode==\Spro\AplazoPayment\Model\Config\Source\Mode::PROD){
-            return \Spro\AplazoPayment\Model\Config::APLAZO_PROD_LINK;
-        }
-		return \Spro\AplazoPayment\Model\Config::APLAZO_PROD_LINK;
+
 	}
 }

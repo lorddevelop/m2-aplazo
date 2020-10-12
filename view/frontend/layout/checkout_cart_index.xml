@@ -14,7 +14,7 @@
                     class="Spro\AplazoPayment\Block\Product\View"
                     name="spro.aplazopayment.checkout.button"
                     after="spro.aplazopayment.checkout.logo"
-                    template="Spro_AplazoPayment::product/view/buy_with_avve_checkout.phtml"
+                    template="Spro_AplazoPayment::product/view/buy_with_aplazo_checkout.phtml"
                     ifconfig="payment/aplazo_payment/show_on_cart"
             />
         </referenceContainer>

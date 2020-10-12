@@ -22,10 +22,6 @@ define([
             return this.item.method;
         },
 
-        getRedirectUrl: function () {
-            return window.avvePaymentRedirectUrl !== undefined ? window.avvePaymentRedirectUrl : 'https://fluffyrobots.avve.com/purchase/true/';
-        },
-
         isActive: function() {
             return true;
         },
@@ -39,16 +35,15 @@ define([
             let _this = this;
 
             $.ajax({
-                url: url.build('avvepayment/ajax/transaction'),
+                url: url.build('aplazopayment/ajax/transaction'),
                 type: 'GET',
                 cache: false,
 
                 success: function (response) {
-                    console.log(window.avvePaymentRedirectUrl)
 
-                    if (response.error === false && response.transactionId !== null) {
-                        let url = _this.getRedirectUrl();
-                        window.location = url + response.transactionId;
+                    if (response.error === false && response.redirecturl !== null) {
+                        let url = response.redirecturl;
+                        window.location = url;
                         _this.placeOrder(data, event);
                     } else {
                         console.log(response);

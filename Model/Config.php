@@ -3,6 +3,7 @@
 namespace Spro\AplazoPayment\Model;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Spro\AplazoPayment\Model\Config\Source\Mode;
 
 class Config
 {
@@ -156,6 +157,21 @@ class Config
     public function getSortOrder()
     {
         return $this->scopeConfig->getValue(self::APLAZO_SORT_ORDER);
+    }
+
+    public function getBaseApiUrl()
+    {
+        $mode = $this->getMode();
+        if ($mode==Mode::STAGE){
+            return self::APLAZO_STAGE_LINK;
+        }
+        if ($mode==Mode::PREPROD){
+            return self::APLAZO_PREPROD_LINK;
+        }
+        if ($mode==Mode::PROD){
+            return self::APLAZO_PROD_LINK;
+        }
+        return self::APLAZO_PROD_LINK;
     }
 
 

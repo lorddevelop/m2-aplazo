@@ -1,12 +1,12 @@
 <?php
 
-namespace Avve\AvvePayment\Controller\Ajax;
+namespace Spro\AplazoPayment\Controller\Ajax;
 
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\Controller\ResultFactory;
 use Psr\Log\LoggerInterface;
-use Avve\AvvePayment\Helper\TransactionHelper;
+use Spro\AplazoPayment\Client\Client;
 use Magento\Checkout\Model\Session as CheckoutSession;
 
 /**
@@ -16,9 +16,9 @@ use Magento\Checkout\Model\Session as CheckoutSession;
 class Transaction extends Action
 {
 	/**
-	 * @var TransactionHelper
+	 * @var Client
 	 */
-	protected $_transactionHelper;
+	protected $client;
 	/**
 	 * @var LoggerInterface
 	 */
@@ -33,18 +33,18 @@ class Transaction extends Action
 	 * @param Context           $context
 	 * @param CheckoutSession   $checkoutSession
 	 * @param LoggerInterface   $logger
-	 * @param TransactionHelper $transactionHelper
+	 * @param Client $client
 	 */
 	public function __construct(
 		Context				$context,
 		CheckoutSession		$checkoutSession,
 		LoggerInterface		$logger,
-		TransactionHelper	$transactionHelper
+		Client	$client
 	)
 	{
 		$this->_logger				=	$logger;
 		$this->_checkoutSession		=	$checkoutSession;
-		$this->_transactionHelper	=	$transactionHelper;
+		$this->client	=	$client;
 		parent::__construct($context);
 	}
 
@@ -60,15 +60,17 @@ class Transaction extends Action
 		];
 		$resultJson	=	$this->resultFactory->create(ResultFactory::TYPE_JSON);
 		try {
-			$response	=	$this->_transactionHelper->getTransactionId($this->_transactionHelper->getProductData());
-			if (isset($response['data']['id'])) {
-				$transactionId = $response['data']['id'];
-				$this->_checkoutSession->setAvveTransactionId($transactionId);
-				$data = [
-					'error'			=>	false,
-					'message'		=>	'',
-					'transactionId'	=>	$transactionId
-				];
+			$auth	=	$this->client->auth();
+			if ($auth && is_array($auth)) {
+			    $resultUrl = $this->client->create($auth,$this->_checkoutSession->getQuote());
+
+			    if ($resultUrl) {
+                    $data = [
+                        'error' => false,
+                        'message' => '',
+                        'redirecturl' => $resultUrl
+                    ];
+                }
 			}
 		} catch (\Exception $e) {
 			$this->_logger->debug($e->getMessage());
