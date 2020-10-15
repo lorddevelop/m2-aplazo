@@ -38,24 +38,17 @@
                         type: 'GET',
                         cache: false,
 
-                        success: function (data) {
-                            if (data.error === false && data.transactionId !== null) {
-                                window.location = _this.aplazoPaymentRedirectUrl + data.transactionId;
-                                _this.enableButton();
+                        success: function (response) {
+
+                            if (response.error === false && response.redirecturl !== null) {
+                                let url = response.redirecturl;
+                                window.location = url;
                             } else {
-                                $(_this.aplazoErrorClass).text(data.message).animate({
-                                    width: "auto",
-                                    color: 'red',
-                                    "font-weight": "bold"
-                                }, 5000, function() {
-                                    $(_this.aplazoErrorClass).text("");
-                                });
-                                _this.enableButton();
+                                console.log(response);
                             }
                         },
-                        error: function (data) {
-                            console.log(data);
-                            _this.enableButton();
+                        error: function (response) {
+                            console.log(response);
                         }
                     });
                 }

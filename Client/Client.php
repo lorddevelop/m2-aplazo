@@ -10,6 +10,7 @@ use Magento\Framework\Message\ManagerInterface;
 use Magento\Newsletter\Model\Subscriber;
 use Magento\Store\Model\StoreManagerInterface;
 use Psr\Log\LoggerInterface;
+use Magento\Catalog\Helper\ImageFactory ;
 
 
 /**
@@ -18,12 +19,6 @@ use Psr\Log\LoggerInterface;
  */
 class Client
 {
-    const VIRIDIAN_DELIVERY_METHOD = 'delivery_delivery';
-    const VIRIDIAN_DELIVERY_SKU = 'DELV-0001';
-    const VIRIDIAN_PASSWORD = 'viridian/general/api_password';
-    const VIRIDIAN_USER = 'viridian/general/api_user';
-    const VIRIDIAN_DOMAIN = 'viridian/general/api_domain';
-    const VIRIDIAN_ENABLE = 'viridian/general/enable';
     /**
      * @var ScopeConfigInterface
      */
@@ -80,7 +75,8 @@ class Client
         Curl $curl,
         LoggerInterface $logger,
         StoreManagerInterface $storeManager,
-        ManagerInterface $messageManager
+        ManagerInterface $messageManager,
+        ImageFactory $imageHelperFactory
     )
     {
         $this->storeManager = $storeManager;
@@ -88,6 +84,7 @@ class Client
         $this->curl = $curl;
         $this->logger = $logger;
         $this->messageManager = $messageManager;
+        $this->imageHelperFactory = $imageHelperFactory;
         $this->domain = $this->config->getBaseApiUrl();
     }
 
@@ -140,9 +137,10 @@ class Client
         foreach ($quote->getAllVisibleItems() as $quoteItem){
             $productArr = [
                 "count" => $quoteItem->getQty(),
-                "description" => $quoteItem->getProduct()->getName(),
+                "description" => $quoteItem->getProduct()->getShortDescription(),
                 "id" => $quoteItem->getProduct()->getId(),
-                "imageUrl" => "string",
+                "imageUrl" => $this->imageHelperFactory->create()
+                    ->init($quoteItem->getProduct(), 'product_small_image')->getUrl(),
                 "price" => $quoteItem->getPrice(),
                 "title" => $quoteItem->getName()
             ];
