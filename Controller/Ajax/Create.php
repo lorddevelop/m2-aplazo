@@ -22,7 +22,6 @@ use Magento\Quote\Model\QuoteFactory;
 use Psr\Log\LoggerInterface;
 use Magento\Framework\Webapi\Response;
 use Magento\Quote\Model\QuoteManagement;
-use Avve\AvvePayment\Helper\Order as AvveOrderHelper;
 
 /**
  * Class Create
@@ -41,10 +40,6 @@ class Create extends Action implements HttpGetActionInterface, CsrfAwareActionIn
 	 * @var JsonFactory
 	 */
 	protected $_jsonFactory;
-	/**
-	 * @var Data
-	 */
-	protected $_avveDataHelper;
 	/**
 	 * @var EstimateShippingMethods
 	 */
@@ -66,10 +61,6 @@ class Create extends Action implements HttpGetActionInterface, CsrfAwareActionIn
 	 */
 	protected $_logger;
 	/**
-	 * @var AvveOrderHelper
-	 */
-	protected $_avveOrderHelper;
-	/**
 	 * @var
 	 */
 	protected $orderAvveInterface;
@@ -81,19 +72,16 @@ class Create extends Action implements HttpGetActionInterface, CsrfAwareActionIn
 	 * @param Context                 $context
 	 * @param RedirectFactory         $redirectFactory
 	 * @param JsonFactory             $jsonFactory
-	 * @param Data                    $dataHelper
 	 * @param EstimateShippingMethods $estimateShippingMethods
 	 * @param CheckoutSession         $checkoutSession
 	 * @param CartRepositoryInterface $quoteRepository
 	 * @param QuoteFactory            $quoteFactory
 	 * @param LoggerInterface         $logger
-	 * @param AvveOrderHelper         $orderHelper
 	 */
 	public function __construct(
 		Context						$context,
 		RedirectFactory				$redirectFactory,
 		JsonFactory					$jsonFactory,
-		Data						$dataHelper,
 		EstimateShippingMethods		$estimateShippingMethods,
 		CheckoutSession				$checkoutSession,
 		CartRepositoryInterface		$quoteRepository,
@@ -107,7 +95,6 @@ class Create extends Action implements HttpGetActionInterface, CsrfAwareActionIn
 		$this->_quoteRepository				=	$quoteRepository;
 		$this->_checkoutSession				=	$checkoutSession;
 		$this->_estimateShippingMethods		=	$estimateShippingMethods;
-		$this->_avveDataHelper				=	$dataHelper;
 		$this->_jsonFactory					=	$jsonFactory;
 		$this->_redirectFactory				=	$redirectFactory;
 		$this->quoteManagement = $quoteManagement;
@@ -145,17 +132,6 @@ class Create extends Action implements HttpGetActionInterface, CsrfAwareActionIn
 	{
 	    return true;
 		$requestToken	=	$this->getRequest()->getParam(self::PARAM_NAME_TOKEN);
-		if ($requestToken) {
-			try {
-				$apiKey	=	$this->_avveDataHelper->getUserToken();
-				if ((strlen($apiKey) == strlen($requestToken)) &&
-					strcmp($apiKey, $requestToken) == 0) {
-					return true;
-				}
-			} catch (NoSuchEntityException $e) {
-				$this->_logger->debug($e->getMessage());
-			}
-		}
 		return false;
 	}
 
