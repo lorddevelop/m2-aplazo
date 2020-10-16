@@ -37,10 +37,6 @@ class Create extends Action implements HttpGetActionInterface, CsrfAwareActionIn
 	 */
 	protected $_jsonFactory;
 	/**
-	 * @var EstimateShippingMethods
-	 */
-	protected $_estimateShippingMethods;
-	/**
 	 * @var CheckoutSession
 	 */
 	protected $_checkoutSession;
@@ -64,7 +60,6 @@ class Create extends Action implements HttpGetActionInterface, CsrfAwareActionIn
      * @param Context $context
      * @param RedirectFactory $redirectFactory
      * @param JsonFactory $jsonFactory
-     * @param EstimateShippingMethods $estimateShippingMethods
      * @param CheckoutSession $checkoutSession
      * @param CartRepositoryInterface $quoteRepository
      * @param QuoteFactory $quoteFactory
@@ -75,7 +70,6 @@ class Create extends Action implements HttpGetActionInterface, CsrfAwareActionIn
 		Context						$context,
 		RedirectFactory				$redirectFactory,
 		JsonFactory					$jsonFactory,
-		EstimateShippingMethods		$estimateShippingMethods,
 		CheckoutSession				$checkoutSession,
 		CartRepositoryInterface		$quoteRepository,
 		QuoteFactory				$quoteFactory,
@@ -87,7 +81,6 @@ class Create extends Action implements HttpGetActionInterface, CsrfAwareActionIn
 		$this->_quoteFactory				=	$quoteFactory;
 		$this->_quoteRepository				=	$quoteRepository;
 		$this->_checkoutSession				=	$checkoutSession;
-		$this->_estimateShippingMethods		=	$estimateShippingMethods;
 		$this->_jsonFactory					=	$jsonFactory;
 		$this->_redirectFactory				=	$redirectFactory;
 		$this->quoteManagement = $quoteManagement;
