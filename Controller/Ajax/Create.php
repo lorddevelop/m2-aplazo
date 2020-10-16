@@ -1,7 +1,8 @@
 <?php
 
-namespace Avve\AvvePayment\Controller\Ajax;
+namespace Spro\AplazoPayment\Controller\Ajax;
 
+use Aheadworks\OneStepCheckout\Block\Checkout;
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use Magento\Checkout\Model\Session as CheckoutSession;
@@ -10,7 +11,7 @@ use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Controller\ResultFactory;
 use Avve\AvvePayment\Helper\Data;
 use Avve\AvvePayment\Helper\EstimateShippingMethods;
-use Magento\Framework\App\Action\HttpPostActionInterface;
+use Magento\Framework\App\Action\HttpGetActionInterface;
 use Magento\Framework\App\CsrfAwareActionInterface;
 use Magento\Framework\App\Request\InvalidRequestException;
 use Magento\Framework\App\RequestInterface;
@@ -20,13 +21,14 @@ use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Quote\Model\QuoteFactory;
 use Psr\Log\LoggerInterface;
 use Magento\Framework\Webapi\Response;
+use Magento\Quote\Model\QuoteManagement;
 use Avve\AvvePayment\Helper\Order as AvveOrderHelper;
 
 /**
  * Class Create
  * @package Avve\AvvePayment\Controller\Ajax
  */
-class Create extends Action implements HttpPostActionInterface, CsrfAwareActionInterface
+class Create extends Action implements HttpGetActionInterface, CsrfAwareActionInterface
 {
 
 	const PARAM_NAME_TOKEN = 'token';
@@ -72,6 +74,8 @@ class Create extends Action implements HttpPostActionInterface, CsrfAwareActionI
 	 */
 	protected $orderAvveInterface;
 
+	protected $quoteManagement;
+
 	/**
 	 * Create constructor.
 	 * @param Context                 $context
@@ -95,10 +99,9 @@ class Create extends Action implements HttpPostActionInterface, CsrfAwareActionI
 		CartRepositoryInterface		$quoteRepository,
 		QuoteFactory				$quoteFactory,
 		LoggerInterface				$logger,
-		AvveOrderHelper				$orderHelper
-	)
+        QuoteManagement $quoteManagement
+    )
 	{
-		$this->_avveOrderHelper				=	$orderHelper;
 		$this->_logger						=	$logger;
 		$this->_quoteFactory				=	$quoteFactory;
 		$this->_quoteRepository				=	$quoteRepository;
@@ -107,6 +110,7 @@ class Create extends Action implements HttpPostActionInterface, CsrfAwareActionI
 		$this->_avveDataHelper				=	$dataHelper;
 		$this->_jsonFactory					=	$jsonFactory;
 		$this->_redirectFactory				=	$redirectFactory;
+		$this->quoteManagement = $quoteManagement;
 
 		parent::__construct($context);
 	}
@@ -139,6 +143,7 @@ class Create extends Action implements HttpPostActionInterface, CsrfAwareActionI
 	 */
 	public function validateForCsrf(RequestInterface $request): ?bool
 	{
+	    return true;
 		$requestToken	=	$this->getRequest()->getParam(self::PARAM_NAME_TOKEN);
 		if ($requestToken) {
 			try {
@@ -159,28 +164,14 @@ class Create extends Action implements HttpPostActionInterface, CsrfAwareActionI
 	 */
 	public function execute()
 	{
-		$orderData	=	[];
-		$result		=	$this->_jsonFactory->create();
-		$orderData	=	$this->getRequest()->getParams();
-		$resultJson	=	$this->resultFactory->create(ResultFactory::TYPE_JSON);
+		$result	=	$this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
 		try {
-			$result->setHttpResponseCode(Response::HTTP_OK);
-			$response	=	$this->_avveOrderHelper->createOrder($orderData);
-			$resultJson->setData($response);
-			return $resultJson;
+			$quote = $this->_checkoutSession->getQuote();
+            $order = $this->quoteManagement->submit($quote);
+			return $result->redirect('checkout/onepage/success');
 		} catch (\Exception $e) {
 			$this->_logger->debug($e->getMessage());
-			$result->setHttpResponseCode(Exception::HTTP_BAD_REQUEST);
-			$response = [
-				"success"	=>	false,
-				"message"	=>	$e->getMessage(),
-				"data"		=>	[
-					"order_id"	=>	null
-				],
-				"errors"	=>	[]
-			];
-			$resultJson->setData($response);
-			return $resultJson;
+            return $result->redirect('checkout/cart');
 		}
 	}
 }
