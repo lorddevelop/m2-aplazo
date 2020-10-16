@@ -2,15 +2,12 @@
 
 namespace Spro\AplazoPayment\Controller\Ajax;
 
-use Aheadworks\OneStepCheckout\Block\Checkout;
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use Magento\Checkout\Model\Session as CheckoutSession;
 use Magento\Framework\Controller\Result\RedirectFactory;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Controller\ResultFactory;
-use Avve\AvvePayment\Helper\Data;
-use Avve\AvvePayment\Helper\EstimateShippingMethods;
 use Magento\Framework\App\Action\HttpGetActionInterface;
 use Magento\Framework\App\CsrfAwareActionInterface;
 use Magento\Framework\App\Request\InvalidRequestException;
@@ -20,7 +17,6 @@ use Magento\Framework\Webapi\Exception;
 use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Quote\Model\QuoteFactory;
 use Psr\Log\LoggerInterface;
-use Magento\Framework\Webapi\Response;
 use Magento\Quote\Model\QuoteManagement;
 
 /**
@@ -60,24 +56,21 @@ class Create extends Action implements HttpGetActionInterface, CsrfAwareActionIn
 	 * @var LoggerInterface
 	 */
 	protected $_logger;
-	/**
-	 * @var
-	 */
-	protected $orderAvveInterface;
 
 	protected $quoteManagement;
 
-	/**
-	 * Create constructor.
-	 * @param Context                 $context
-	 * @param RedirectFactory         $redirectFactory
-	 * @param JsonFactory             $jsonFactory
-	 * @param EstimateShippingMethods $estimateShippingMethods
-	 * @param CheckoutSession         $checkoutSession
-	 * @param CartRepositoryInterface $quoteRepository
-	 * @param QuoteFactory            $quoteFactory
-	 * @param LoggerInterface         $logger
-	 */
+    /**
+     * Create constructor.
+     * @param Context $context
+     * @param RedirectFactory $redirectFactory
+     * @param JsonFactory $jsonFactory
+     * @param EstimateShippingMethods $estimateShippingMethods
+     * @param CheckoutSession $checkoutSession
+     * @param CartRepositoryInterface $quoteRepository
+     * @param QuoteFactory $quoteFactory
+     * @param LoggerInterface $logger
+     * @param QuoteManagement $quoteManagement
+     */
 	public function __construct(
 		Context						$context,
 		RedirectFactory				$redirectFactory,
