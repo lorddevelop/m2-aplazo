@@ -130,10 +130,12 @@ class Create extends Action implements HttpGetActionInterface, CsrfAwareActionIn
 		try {
 			$quote = $this->_checkoutSession->getQuote();
             $order = $this->quoteManagement->submit($quote);
-			return $result->redirect('checkout/onepage/success');
+            $result->setUrl('checkout/onepage/success');
+            return $result;
 		} catch (\Exception $e) {
 			$this->_logger->debug($e->getMessage());
-            return $result->redirect('checkout/cart');
+            $result->setUrl('checkout/cart');
+            return $result;
 		}
 	}
 }
