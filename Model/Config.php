@@ -62,7 +62,6 @@ class Config
      */
     const APLAZO_SORT_ORDER = 'payment/aplazo_payment/sort_order';
 
-
     /**
      * @var ScopeConfigInterface
      */

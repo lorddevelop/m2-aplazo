@@ -14,8 +14,8 @@
                 this.buyWithAplazoId = '#buy_with_aplazo_checkout';
                 this.buyWithAplazoSelector = $(this.buyWithAplazoId);
 
-                this.aplazoPaymentAjaxUrl = '<?= $block->getBaseUrl() ?>aplazopayment/ajax/transaction';
-                this.aplazoPaymentRedirectUrl = '<?php echo $block->getRedirectUrl() ?>';
+                this.aplazoPaymentAjaxUrl = '<?= $block->escapeHtml($block->getBaseUrl()); ?>aplazopayment/ajax/transaction';
+                this.aplazoPaymentRedirectUrl = '<?= $block->escapeHtml($block->getRedirectUrl()); ?>';
                 this.aplazoErrorClass = '.error-aplazopayment';
                 this.disabledClass = 'disabled';
 

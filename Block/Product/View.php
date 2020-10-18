@@ -39,11 +39,4 @@ class View extends Template
         $this->context = $context;
         parent::__construct($context, $data);
     }
-
-    /**
-     * @return string
-     */
-    public function getRedirectUrl()
-    {
-    }
 }

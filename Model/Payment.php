@@ -79,8 +79,7 @@ class Payment extends \Magento\Payment\Model\Method\AbstractMethod
         \Psr\Log\LoggerInterface $psrLogger,
         Session $_checkoutSession,
         array $data = []
-    )
-    {
+    ) {
         parent::__construct(
             $context,
             $registry,
@@ -146,15 +145,6 @@ class Payment extends \Magento\Payment\Model\Method\AbstractMethod
     public function authorize(\Magento\Payment\Model\InfoInterface $payment, $amount)
     {
         return $this;
-    }
-
-    /**
-     * @param \Magento\Quote\Api\Data\CartInterface|null $quote
-     * @return bool
-     */
-    public function isAvailable(\Magento\Quote\Api\Data\CartInterface $quote = null)
-    {
-        return parent::isAvailable($quote);
     }
 
     /**

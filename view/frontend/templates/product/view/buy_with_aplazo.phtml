@@ -17,8 +17,8 @@
                 this.addToCartButtonId = '#product-addtocart-button';
                 this.addToCartButtonSelector = $(this.addToCartButtonId);
 
-                this.aplazoPaymentAjaxUrl = '<?= $block->getBaseUrl() ?>aplazopayment/ajax/SingleTransaction';
-                this.aplazoPaymentRedirectUrl = '<?php echo $block->getRedirectUrl() ?>';
+                this.aplazoPaymentAjaxUrl = '<?= $block->escapeHtml($block->getBaseUrl()); ?>aplazopayment/ajax/SingleTransaction';
+                this.aplazoPaymentRedirectUrl = '<?= $block->escapeHtml($block->getRedirectUrl()); ?>';
                 this.aplazoErrorClass = '.error-aplazopayment';
                 this.disabledClass = 'disabled';
 

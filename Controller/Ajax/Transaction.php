@@ -37,8 +37,7 @@ class Transaction extends Action
         CheckoutSession $checkoutSession,
         LoggerInterface $logger,
         Client $client
-    )
-    {
+    ) {
         $this->_logger = $logger;
         $this->_checkoutSession = $checkoutSession;
         $this->client = $client;

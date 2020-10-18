@@ -79,8 +79,7 @@ class Create extends Action implements HttpGetActionInterface, CsrfAwareActionIn
         QuoteFactory $quoteFactory,
         LoggerInterface $logger,
         QuoteManagement $quoteManagement
-    )
-    {
+    ) {
         $this->_logger = $logger;
         $this->_quoteFactory = $quoteFactory;
         $this->_quoteRepository = $quoteRepository;
@@ -91,7 +90,6 @@ class Create extends Action implements HttpGetActionInterface, CsrfAwareActionIn
 
         parent::__construct($context);
     }
-
 
     /**
      * @param RequestInterface $request
@@ -112,7 +110,6 @@ class Create extends Action implements HttpGetActionInterface, CsrfAwareActionIn
 
         return new InvalidRequestException($result, [new Phrase('Invalid token')]);
     }
-
 
     /**
      * @param RequestInterface $request

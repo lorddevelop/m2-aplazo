@@ -109,8 +109,7 @@ class Client
         StoreManagerInterface $storeManager,
         ManagerInterface $messageManager,
         ImageFactory $imageHelperFactory
-    )
-    {
+    ) {
         $this->storeManager = $storeManager;
         $this->config = $config;
         $this->curl = $curl;
@@ -119,7 +118,6 @@ class Client
         $this->imageHelperFactory = $imageHelperFactory;
         $this->domain = $this->config->getBaseApiUrl();
     }
-
 
     public function auth()
     {
