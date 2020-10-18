@@ -2,26 +2,25 @@
 
 namespace Spro\AplazoPayment\Controller\Ajax;
 
+use Magento\Checkout\Model\Session as CheckoutSession;
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
-use Magento\Checkout\Model\Session as CheckoutSession;
-use Magento\Framework\Controller\Result\RedirectFactory;
-use Magento\Framework\Controller\Result\JsonFactory;
-use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\App\Action\HttpGetActionInterface;
 use Magento\Framework\App\CsrfAwareActionInterface;
 use Magento\Framework\App\Request\InvalidRequestException;
 use Magento\Framework\App\RequestInterface;
+use Magento\Framework\Controller\Result\JsonFactory;
+use Magento\Framework\Controller\Result\RedirectFactory;
+use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Phrase;
 use Magento\Framework\Webapi\Exception;
 use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Quote\Model\QuoteFactory;
-use Psr\Log\LoggerInterface;
 use Magento\Quote\Model\QuoteManagement;
+use Psr\Log\LoggerInterface;
 
-class Create extends Action implements HttpGetActionInterface, CsrfAwareActionInterface
+class Success extends Action implements HttpGetActionInterface, CsrfAwareActionInterface
 {
-
     const PARAM_NAME_TOKEN = 'token';
 
     /**
@@ -128,7 +127,7 @@ class Create extends Action implements HttpGetActionInterface, CsrfAwareActionIn
         $result = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
         try {
             $quote = $this->_checkoutSession->getQuote();
-            $order = $this->quoteManagement->submit($quote);
+            //$order = $this->quoteManagement->submit($quote);
             $result->setUrl('/checkout/onepage/success');
             return $result;
         } catch (\Exception $e) {
