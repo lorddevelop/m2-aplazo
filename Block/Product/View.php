@@ -8,36 +8,42 @@ use Spro\AplazoPayment\Model\Config;
 
 class View extends Template
 {
-	/**
-	 * @var Context
-	 */
-	private $context;
-	/**
-	 * @var array
-	 */
-	private $data;
-	/**
-	 * @var Config
-	 */
-	protected $config;
+    /**
+     * @var Context
+     */
+    private $context;
 
+    /**
+     * @var array
+     */
+    private $data;
 
-	public function __construct(
+    /**
+     * @var Config
+     */
+    protected $config;
+
+    /**
+     * View constructor.
+     * @param Config $config
+     * @param Context $context
+     * @param array $data
+     */
+    public function __construct(
         Config $config,
-		Context $context,
-		array $data = []
-	) {
-		$this->config = $config;
-		$this->data = $data;
-		$this->context = $context;
-		parent::__construct($context, $data);
-	}
+        Context $context,
+        array $data = []
+    ) {
+        $this->config = $config;
+        $this->data = $data;
+        $this->context = $context;
+        parent::__construct($context, $data);
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getRedirectUrl()
-	{
-
-	}
+    /**
+     * @return string
+     */
+    public function getRedirectUrl()
+    {
+    }
 }

@@ -19,41 +19,45 @@ use Magento\Quote\Model\QuoteFactory;
 use Psr\Log\LoggerInterface;
 use Magento\Quote\Model\QuoteManagement;
 
-/**
- * Class Create
- * @package Avve\AvvePayment\Controller\Ajax
- */
 class Create extends Action implements HttpGetActionInterface, CsrfAwareActionInterface
 {
 
-	const PARAM_NAME_TOKEN = 'token';
+    const PARAM_NAME_TOKEN = 'token';
 
-	/**
-	 * @var RedirectFactory
-	 */
-	protected $_redirectFactory;
-	/**
-	 * @var JsonFactory
-	 */
-	protected $_jsonFactory;
-	/**
-	 * @var CheckoutSession
-	 */
-	protected $_checkoutSession;
-	/**
-	 * @var CartRepositoryInterface
-	 */
-	protected $_quoteRepository;
-	/**
-	 * @var QuoteFactory
-	 */
-	protected $_quoteFactory;
-	/**
-	 * @var LoggerInterface
-	 */
-	protected $_logger;
+    /**
+     * @var RedirectFactory
+     */
+    protected $_redirectFactory;
 
-	protected $quoteManagement;
+    /**
+     * @var JsonFactory
+     */
+    protected $_jsonFactory;
+
+    /**
+     * @var CheckoutSession
+     */
+    protected $_checkoutSession;
+
+    /**
+     * @var CartRepositoryInterface
+     */
+    protected $_quoteRepository;
+
+    /**
+     * @var QuoteFactory
+     */
+    protected $_quoteFactory;
+
+    /**
+     * @var LoggerInterface
+     */
+    protected $_logger;
+
+    /**
+     * @var QuoteManagement
+     */
+    protected $quoteManagement;
 
     /**
      * Create constructor.
@@ -66,76 +70,74 @@ class Create extends Action implements HttpGetActionInterface, CsrfAwareActionIn
      * @param LoggerInterface $logger
      * @param QuoteManagement $quoteManagement
      */
-	public function __construct(
-		Context						$context,
-		RedirectFactory				$redirectFactory,
-		JsonFactory					$jsonFactory,
-		CheckoutSession				$checkoutSession,
-		CartRepositoryInterface		$quoteRepository,
-		QuoteFactory				$quoteFactory,
-		LoggerInterface				$logger,
+    public function __construct(
+        Context $context,
+        RedirectFactory $redirectFactory,
+        JsonFactory $jsonFactory,
+        CheckoutSession $checkoutSession,
+        CartRepositoryInterface $quoteRepository,
+        QuoteFactory $quoteFactory,
+        LoggerInterface $logger,
         QuoteManagement $quoteManagement
     )
-	{
-		$this->_logger						=	$logger;
-		$this->_quoteFactory				=	$quoteFactory;
-		$this->_quoteRepository				=	$quoteRepository;
-		$this->_checkoutSession				=	$checkoutSession;
-		$this->_jsonFactory					=	$jsonFactory;
-		$this->_redirectFactory				=	$redirectFactory;
-		$this->quoteManagement = $quoteManagement;
+    {
+        $this->_logger = $logger;
+        $this->_quoteFactory = $quoteFactory;
+        $this->_quoteRepository = $quoteRepository;
+        $this->_checkoutSession = $checkoutSession;
+        $this->_jsonFactory = $jsonFactory;
+        $this->_redirectFactory = $redirectFactory;
+        $this->quoteManagement = $quoteManagement;
 
-		parent::__construct($context);
-	}
-
-
-	/**
-	 * @param RequestInterface $request
-	 * @return InvalidRequestException|null
-	 */
-	public function createCsrfValidationException(RequestInterface $request): ?InvalidRequestException
-	{
-		$result	=	$this->resultFactory->create(ResultFactory::TYPE_JSON);
-		$result->setHttpResponseCode(Exception::HTTP_BAD_REQUEST);
-		$result->setData([
-			"success"	=>	false,
-			"message"	=> 	__('Invalid token'),
-			"data"		=>	[
-				"order_id"	=>	null
-			],
-			"errors"	=>	[]
-		]);
-
-		return new InvalidRequestException($result, [new Phrase('Invalid token')]);
-	}
+        parent::__construct($context);
+    }
 
 
-	/**
-	 * @param RequestInterface $request
-	 * @return bool|null
-	 */
-	public function validateForCsrf(RequestInterface $request): ?bool
-	{
-	    return true;
-		$requestToken	=	$this->getRequest()->getParam(self::PARAM_NAME_TOKEN);
-		return false;
-	}
+    /**
+     * @param RequestInterface $request
+     * @return InvalidRequestException|null
+     */
+    public function createCsrfValidationException(RequestInterface $request): ?InvalidRequestException
+    {
+        $result = $this->resultFactory->create(ResultFactory::TYPE_JSON);
+        $result->setHttpResponseCode(Exception::HTTP_BAD_REQUEST);
+        $result->setData([
+            "success" => false,
+            "message" => __('Invalid token'),
+            "data" => [
+                "order_id" => null
+            ],
+            "errors" => []
+        ]);
 
-	/**
-	 * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface|\Magento\Framework\View\Result\Layout
-	 */
-	public function execute()
-	{
-		$result	=	$this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
-		try {
-			$quote = $this->_checkoutSession->getQuote();
+        return new InvalidRequestException($result, [new Phrase('Invalid token')]);
+    }
+
+
+    /**
+     * @param RequestInterface $request
+     * @return bool|null
+     */
+    public function validateForCsrf(RequestInterface $request): ?bool
+    {
+        return true;
+    }
+
+    /**
+     * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface|\Magento\Framework\View\Result\Layout
+     */
+    public function execute()
+    {
+        $result = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
+        try {
+            $quote = $this->_checkoutSession->getQuote();
             $order = $this->quoteManagement->submit($quote);
             $result->setUrl('/checkout/onepage/success');
             return $result;
-		} catch (\Exception $e) {
-			$this->_logger->debug($e->getMessage());
+        } catch (\Exception $e) {
+            $this->_logger->debug($e->getMessage());
             $result->setUrl('/checkout/cart');
             return $result;
-		}
-	}
+        }
+    }
 }

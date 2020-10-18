@@ -10,15 +10,16 @@ use Magento\Framework\Message\ManagerInterface;
 use Magento\Newsletter\Model\Subscriber;
 use Magento\Store\Model\StoreManagerInterface;
 use Psr\Log\LoggerInterface;
-use Magento\Catalog\Helper\ImageFactory ;
+use Magento\Catalog\Helper\ImageFactory;
 
-
-/**
- * Class Client
- * @package Trulieve\Viridian\Client
- */
 class Client
 {
+
+    /**
+     * @var StoreManagerInterface
+     */
+    protected $storeManager;
+
     /**
      * @var ScopeConfigInterface
      */
@@ -28,6 +29,11 @@ class Client
      * @var LoggerInterface
      */
     protected $logger;
+
+    /**
+     * @var ImageFactory
+     */
+    protected $imageHelperFactory;
 
     /**
      * @var mixed
@@ -48,28 +54,54 @@ class Client
      * @var mixed
      */
     protected $token;
+
     /**
-     * @var\Magento\Framework\Message\ManagerInterface
+     * @var \Magento\Framework\Message\ManagerInterface
      */
     protected $messageManager;
 
+    /**
+     * @var array
+     */
     public $endpoints = [
         "auth" => "api/auth",
         "create" => "api/loan",
     ];
 
+    /**
+     * @var
+     */
     public $probe;
 
     /**
      * @var Subscriber
      */
     protected $subscriber;
+
+    /**
+     * @var
+     */
     protected $addressRepository;
 
+    /**
+     * @var Config
+     */
     protected $config;
 
+    /**
+     * @var Curl
+     */
     protected $curl;
 
+    /**
+     * Client constructor.
+     * @param Config $config
+     * @param Curl $curl
+     * @param LoggerInterface $logger
+     * @param StoreManagerInterface $storeManager
+     * @param ManagerInterface $messageManager
+     * @param ImageFactory $imageHelperFactory
+     */
     public function __construct(
         Config $config,
         Curl $curl,
@@ -102,12 +134,17 @@ class Client
         $this->curl->post($url, $payload);
         $result = $this->curl->getBody();
         if ($this->curl->getStatus() == 200) {
-            return json_decode($result,true);
+            return json_decode($result, true);
         }
         return false;
     }
 
-    public function create($authHeader,$quote)
+    /**
+     * @param $authHeader
+     * @param $quote
+     * @return bool|string
+     */
+    public function create($authHeader, $quote)
     {
         $url = $this->makeUrl("create");
 
@@ -119,22 +156,30 @@ class Client
         $payload = json_encode($body);
         $this->curl->post($url, $payload);
         $result = $this->curl->getBody();
-        if ($this->curl->getStatus()==200){
+        if ($this->curl->getStatus() == 200) {
             return $result;
         }
         return false;
-
     }
 
+    /**
+     * @param $endpoint
+     * @return string
+     */
     protected function makeUrl($endpoint)
     {
         return $this->domain . $this->endpoints[$endpoint];
     }
 
+    /**
+     * @param Quote $quote
+     * @return array
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     */
     protected function prepareCreateParams(Quote $quote)
     {
         $products = [];
-        foreach ($quote->getAllVisibleItems() as $quoteItem){
+        foreach ($quote->getAllVisibleItems() as $quoteItem) {
             $productArr = [
                 "count" => $quoteItem->getQty(),
                 "description" => $quoteItem->getProduct()->getShortDescription(),

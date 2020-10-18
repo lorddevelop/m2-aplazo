@@ -9,73 +9,70 @@ use Psr\Log\LoggerInterface;
 use Spro\AplazoPayment\Client\Client;
 use Magento\Checkout\Model\Session as CheckoutSession;
 
-/**
- * Class Transaction
- * @package Avve\AvvePayment\Controller\Ajax
- */
 class Transaction extends Action
 {
-	/**
-	 * @var Client
-	 */
-	protected $client;
-	/**
-	 * @var LoggerInterface
-	 */
-	protected $_logger;
-	/**
-	 * @var CheckoutSession
-	 */
-	protected $_checkoutSession;
+    /**
+     * @var Client
+     */
+    protected $client;
 
-	/**
-	 * Transaction constructor.
-	 * @param Context           $context
-	 * @param CheckoutSession   $checkoutSession
-	 * @param LoggerInterface   $logger
-	 * @param Client $client
-	 */
-	public function __construct(
-		Context				$context,
-		CheckoutSession		$checkoutSession,
-		LoggerInterface		$logger,
-		Client	$client
-	)
-	{
-		$this->_logger				=	$logger;
-		$this->_checkoutSession		=	$checkoutSession;
-		$this->client	=	$client;
-		parent::__construct($context);
-	}
+    /**
+     * @var LoggerInterface
+     */
+    protected $_logger;
+    /**
+     * @var CheckoutSession
+     */
+    protected $_checkoutSession;
 
-	/**
-	 * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface|\Magento\Framework\View\Result\Layout
-	 */
-	public function execute()
-	{
-		$data		= [
-			'error'			=>	true,
-			'message'		=>	__('Service temporarily unavailable. Please try again later.'),
-			'transactionId'	=>	null
-		];
-		$resultJson	=	$this->resultFactory->create(ResultFactory::TYPE_JSON);
-		try {
-			$auth	=	$this->client->auth();
-			if ($auth && is_array($auth)) {
-			    $resultUrl = $this->client->create($auth,$this->_checkoutSession->getQuote());
+    /**
+     * Transaction constructor.
+     * @param Context $context
+     * @param CheckoutSession $checkoutSession
+     * @param LoggerInterface $logger
+     * @param Client $client
+     */
+    public function __construct(
+        Context $context,
+        CheckoutSession $checkoutSession,
+        LoggerInterface $logger,
+        Client $client
+    )
+    {
+        $this->_logger = $logger;
+        $this->_checkoutSession = $checkoutSession;
+        $this->client = $client;
+        parent::__construct($context);
+    }
 
-			    if ($resultUrl) {
+    /**
+     * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface|\Magento\Framework\View\Result\Layout
+     */
+    public function execute()
+    {
+        $data = [
+            'error' => true,
+            'message' => __('Service temporarily unavailable. Please try again later.'),
+            'transactionId' => null
+        ];
+        $resultJson = $this->resultFactory->create(ResultFactory::TYPE_JSON);
+        try {
+            $auth = $this->client->auth();
+            if ($auth && is_array($auth)) {
+                $resultUrl = $this->client->create($auth, $this->_checkoutSession->getQuote());
+
+                if ($resultUrl) {
                     $data = [
                         'error' => false,
                         'message' => '',
                         'redirecturl' => $resultUrl
                     ];
                 }
-			}
-		} catch (\Exception $e) {
-			$this->_logger->debug($e->getMessage());
-		}
-		$resultJson->setData($data);
-		return $resultJson;
-	}
+            }
+        } catch (\Exception $e) {
+            $this->_logger->debug($e->getMessage());
+        }
+        $resultJson->setData($data);
+        return $resultJson;
+    }
 }

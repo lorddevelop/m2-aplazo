@@ -12,7 +12,6 @@ class Config
     const APLAZO_PREPROD_LINK = 'https://aplazo-back-preprod.scenario-projects.com/';
     const APLAZO_PROD_LINK = 'https://api.aplazo.mx/';
 
-
     /**
      * config path for active
      */
@@ -75,7 +74,7 @@ class Config
      */
     public function __construct(
         ScopeConfigInterface $scopeConfig
-    ){
+    ) {
         $this->scopeConfig = $scopeConfig;
     }
 
@@ -162,18 +161,15 @@ class Config
     public function getBaseApiUrl()
     {
         $mode = $this->getMode();
-        if ($mode==Mode::STAGE){
+        if ($mode==Mode::STAGE) {
             return self::APLAZO_STAGE_LINK;
         }
-        if ($mode==Mode::PREPROD){
+        if ($mode==Mode::PREPROD) {
             return self::APLAZO_PREPROD_LINK;
         }
-        if ($mode==Mode::PROD){
+        if ($mode==Mode::PROD) {
             return self::APLAZO_PROD_LINK;
         }
         return self::APLAZO_PROD_LINK;
     }
-
-
-
 }
