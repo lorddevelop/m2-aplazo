@@ -44,7 +44,7 @@ class AddAplazoShortcuts implements ObserverInterface
     public function execute(Observer $observer)
     {
         $shortcutButtons = $observer->getEvent()->getContainer();
-        if ($observer->getData('is_catalog_product')) {
+        if ($observer->getData('is_catalog_product') ) {
             $shortcut = $shortcutButtons->getLayout()
                 ->createBlock($this->buttonBlocks[self::PRODUCTPAGE_ALIAS]);
         } else {
