@@ -4,7 +4,7 @@
     <default>
         <payment>
             <aplazo_payment>
-                <active>1</active>
+                <active>0</active>
                 <show_on_product_page>0</show_on_product_page>
                 <show_on_cart>0</show_on_cart>
                 <model>Spro\AplazoPayment\Model\Payment</model>

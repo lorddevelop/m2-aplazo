@@ -2,36 +2,6 @@
 
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
-<!--        Simple product-->
-        <referenceContainer name="product.info.addtocart">
-            <block
-                    class="Spro\AplazoPayment\Block\Product\View"
-                    name="spro.aplazopayment.simple.buy.button"
-                    template="Spro_AplazoPayment::product/view/buy_with_aplazo.phtml"
-                    ifconfig="payment/aplazo_payment/show_on_product_page"
-            />
-        </referenceContainer>
-<!--        Bundle product-->
-        <referenceBlock name="product.info.addtocart.bundle">
-            <block
-                    class="Spro\AplazoPayment\Block\Product\View"
-                    name="spro.aplazopayment.bundle.buy.button"
-                    template="Spro_AplazoPayment::product/view/buy_with_aplazo.phtml"
-                    after="product.info.addtocart.bundle"
-                    ifconfig="payment/aplazo_payment/show_on_product_page"
-            />
-        </referenceBlock>
-
-<!--        Configurable product-->
-        <referenceContainer name="product.info.addtocart.additional">
-            <block
-                    class="Spro\AplazoPayment\Block\Product\View"
-                    name="spro.aplazopayment.configurable.right.buy.button"
-                    template="Spro_AplazoPayment::product/view/buy_with_aplazo.phtml"
-                    after="product.info.addtocart"
-                    ifconfig="payment/aplazo_payment/show_on_product_page"
-            />
-        </referenceContainer>
 
     </body>
 </page>
