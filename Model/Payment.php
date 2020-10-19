@@ -12,22 +12,27 @@ class Payment extends \Magento\Payment\Model\Method\AbstractMethod
      * @var \Psr\Log\LoggerInterface
      */
     protected $_logger;
+
     /**
      * @var
      */
     protected $_countryFactory;
+
     /**
      * @var Session
      */
     protected $_checkoutSession;
+
     /**
      * @var string
      */
     protected $_code = self::CODE;
+
     /**
      * @var bool
      */
     protected $_isGateway = true;
+
     /**
      * @var bool
      */
@@ -36,22 +41,26 @@ class Payment extends \Magento\Payment\Model\Method\AbstractMethod
      * @var bool
      */
     protected $_canCapture = true;
+
     /**
      * @var bool
      */
     protected $_canCapturePartial = true;
+
     /**
      * @var bool
      */
     protected $_canRefund = true;
+
     /**
      * @var bool
      */
     protected $_canRefundInvoicePartial = true;
+
     /**
-     * @var string[]
+     * @var bool
      */
-    protected $_supportedCurrencyCodes = ['USD'];
+    protected $_isInitializeNeeded = true;
 
     /**
      * Payment constructor.
@@ -110,7 +119,6 @@ class Payment extends \Magento\Payment\Model\Method\AbstractMethod
             $payment
                 ->setTransactionId($transactionID)
                 ->setIsTransactionClosed(0);
-
         } catch (\Exception $e) {
             $this->debugData(['exception' => $e->getMessage()]);
             $this->_logger->error(__('Payment capturing error.'));
@@ -145,17 +153,5 @@ class Payment extends \Magento\Payment\Model\Method\AbstractMethod
     public function authorize(\Magento\Payment\Model\InfoInterface $payment, $amount)
     {
         return $this;
-    }
-
-    /**
-     * @param string $currencyCode
-     * @return bool
-     */
-    public function canUseForCurrency($currencyCode)
-    {
-        if (!in_array($currencyCode, $this->_supportedCurrencyCodes)) {
-            return false;
-        }
-        return true;
     }
 }

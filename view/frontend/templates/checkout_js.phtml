@@ -11,13 +11,8 @@
                 this.buyWithAplazoId = '#buy_with_aplazo_checkout';
                 this.buyWithAplazoSelector = $(this.buyWithAplazoId);
 
-                this.aplazoPaymentAjaxUrl = '<?= $block->escapeHtml($block->getBaseUrl()); ?>aplazopayment/ajax/transaction';
-                this.aplazoPaymentRedirectUrl = '<?= $block->escapeHtml($block->getRedirectUrl()); ?>';
+                this.aplazoPaymentAjaxUrl = '<?= $block->escapeHtml($block->getBaseUrl()); ?>aplazopayment/index/transaction';
                 this.aplazoErrorClass = '.error-aplazopayment';
-                this.disabledClass = 'disabled';
-
-                this.addingText = 'Processing ...';
-                this.buttonText = 'Buy with Aplazo';
 
                 this.initEvents();
 
@@ -29,14 +24,14 @@
 
             buyWithAplazoEventClick: function(_this) {
                 return function () {
-                    _this.disableButton();
+                    jQuery('body').loader('show');
                     $.ajax({
                         url: _this.aplazoPaymentAjaxUrl,
                         type: 'GET',
                         cache: false,
 
                         success: function (response) {
-
+                            jQuery('body').loader('hide');
                             if (response.error === false && response.redirecturl !== null) {
                                 let url = response.redirecturl;
                                 window.location = url;
@@ -45,25 +40,12 @@
                             }
                         },
                         error: function (response) {
+                            jQuery('body').loader('hide');
                             console.log(response);
                         }
                     });
                 }
             },
-
-            disableButton: function () {
-                let _this = this;
-                _this.buyWithAplazoSelector.text(_this.addingText);
-                _this.buyWithAplazoSelector.addClass(_this.disabledClass);
-            },
-
-            enableButton: function () {
-                let _this = this;
-                setTimeout(function () {
-                    _this.buyWithAplazoSelector.removeClass(_this.disabledClass);
-                    _this.buyWithAplazoSelector.text(_this.buttonText);
-                }, 1000);
-            }
         };
 
         var aplazo = new Aplazo();

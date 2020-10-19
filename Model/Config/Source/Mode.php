@@ -10,15 +10,15 @@ class Mode implements \Magento\Framework\Option\ArrayInterface
 
     const PROD = 'prod';
 
+    /**
+     * @return array
+     */
     public function toOptionArray()
     {
         return [
-            self::STAGE =>
-                __('Stage'),
-            self::PREPROD =>
-                __('Preprod'),
-            self::PROD =>
-                __('Prod')
+            self::STAGE => __('Stage'),
+            self::PREPROD => __('Preprod'),
+            self::PROD => __('Prod')
         ];
     }
 }

@@ -3,7 +3,6 @@
 namespace Spro\AplazoPayment\Observer;
 
 use Magento\Framework\Event\Observer;
-use Magento\Catalog\Block\ShortcutButtons;
 use Magento\Framework\Event\ObserverInterface;
 
 class AddAplazoShortcuts implements ObserverInterface
@@ -22,7 +21,6 @@ class AddAplazoShortcuts implements ObserverInterface
      * Alias for shopping cart page.
      */
     const PRODUCTPAGE_ALIAS = 'productpage';
-
 
     /**
      * @var string[]
@@ -44,7 +42,7 @@ class AddAplazoShortcuts implements ObserverInterface
     public function execute(Observer $observer)
     {
         $shortcutButtons = $observer->getEvent()->getContainer();
-        if ($observer->getData('is_catalog_product') ) {
+        if ($observer->getData('is_catalog_product')) {
             $shortcut = $shortcutButtons->getLayout()
                 ->createBlock($this->buttonBlocks[self::PRODUCTPAGE_ALIAS]);
         } else {

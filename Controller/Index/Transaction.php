@@ -1,14 +1,15 @@
 <?php
 
-namespace Spro\AplazoPayment\Controller\Ajax;
+namespace Spro\AplazoPayment\Controller\Index;
 
+use Magento\Checkout\Model\Session as CheckoutSession;
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\Controller\ResultFactory;
+use Magento\Quote\Model\QuoteManagement;
 use Psr\Log\LoggerInterface;
 use Spro\AplazoPayment\Client\Client;
-use Magento\Checkout\Model\Session as CheckoutSession;
-use Magento\Quote\Model\QuoteManagement;
+use Spro\AplazoPayment\Helper\Data;
 
 class Transaction extends Action
 {
@@ -32,23 +33,32 @@ class Transaction extends Action
     protected $quoteManagement;
 
     /**
+     * @var Data
+     */
+    protected $aplazoHelper;
+
+    /**
      * Transaction constructor.
      * @param Context $context
      * @param CheckoutSession $checkoutSession
      * @param LoggerInterface $logger
      * @param Client $client
+     * @param QuoteManagement $quoteManagement
+     * @param Data $aplazoHelper
      */
     public function __construct(
         Context $context,
         CheckoutSession $checkoutSession,
         LoggerInterface $logger,
         Client $client,
-        QuoteManagement $quoteManagement
+        QuoteManagement $quoteManagement,
+        Data $aplazoHelper
     ) {
         $this->_logger = $logger;
         $this->_checkoutSession = $checkoutSession;
         $this->client = $client;
         $this->quoteManagement = $quoteManagement;
+        $this->aplazoHelper = $aplazoHelper;
         parent::__construct($context);
     }
 
@@ -67,15 +77,15 @@ class Transaction extends Action
             $auth = $this->client->auth();
             $quote = $this->_checkoutSession->getQuote();
             if ($auth && is_array($auth)) {
-                $resultUrl = $this->client->create($auth, $quote);
                 $shippingAddress = $quote->getShippingAddress();
-                if (!$shippingAddress || !$shippingAddress->getStreet()){
-                    $this->fillDummyAddress($quote);
+                if (!$shippingAddress || !$shippingAddress->getFirstname()) {
+                    $this->aplazoHelper->fillDummyQuote($quote);
                 }
 
-                $quote->setPaymentMethod(\Spro\AplazoPayment\Model\Payment::CODE);
-                $quote->getPayment()->importData(['method' => \Spro\AplazoPayment\Model\Payment::CODE]);
                 $order = $this->quoteManagement->submit($quote);
+
+                $resultUrl = $this->client->create($auth, $quote);
+                $this->setSuccessOrderData($quote, $order);
 
                 if ($resultUrl) {
                     $data = [
@@ -92,35 +102,16 @@ class Transaction extends Action
         return $resultJson;
     }
 
-    protected function fillDummyAddress(&$quote)
+    /**
+     * @param $quote
+     * @param $order
+     */
+    protected function setSuccessOrderData($quote, $order)
     {
-        $quote->setCustomerIsGuest(true);
-        $quote->getShippingAddress()->setEmail('aplazoclient@aplazo.com');
-        $quote->getShippingAddress()->setEmail('aplazoclient@aplazo.com');
-        $quote->getShippingAddress()->setFirstname('Aplazo');
-        $quote->getBillingAddress()->setFirstname('Aplazo');
-        $quote->getShippingAddress()->setLastname('Client');
-        $quote->getBillingAddress()->setLastname('Client');
-        $quote->getShippingAddress()->setCity('Aplazocity');
-        $quote->getBillingAddress()->setCity('Aplazocity');
-        $quote->getShippingAddress()->setPostcode('12345');
-        $quote->getBillingAddress()->setPostcode('12345');
-        $quote->getShippingAddress()->setCountryId('MX');
-        $quote->getBillingAddress()->setCountryId('MX');
-        $quote->getShippingAddress()->setRegionId(664);
-        $quote->getBillingAddress()->setRegionId(664);
-        $quote->getShippingAddress()->setStreet('Aplazostreet');
-        $quote->getBillingAddress()->setStreet('Aplazostreet');
-        $quote->getShippingAddress()->setTelephone('1234567890');
-        $quote->getBillingAddress()->setTelephone('1234567890');
-        $quote->collectTotals();
-        $rates = $quote->getShippingAddress()->getAllShippingRates();
-        if (is_array($rates)){
-            $quote->getShippingAddress()->setShippingMethod($rates[0]->getCode());
-        }
-        $quote->setCustomerEmail('aplazoclient@aplazo.com');
-        $quote->setPaymentMethod(\Spro\AplazoPayment\Model\Payment::CODE);
-        $quote->getPayment()->importData(['method' => \Spro\AplazoPayment\Model\Payment::CODE]);
+        $this->_checkoutSession->setLastSuccessQuoteId($quote->getId());
+        $this->_checkoutSession->setLastQuoteId($quote->getId());
+        $this->_checkoutSession->setLastOrderId($order->getId());
+        $this->_checkoutSession->setLastRealOrderId($order->getIncrementId());
     }
 
 }

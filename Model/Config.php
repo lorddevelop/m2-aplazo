@@ -157,6 +157,9 @@ class Config
         return $this->scopeConfig->getValue(self::APLAZO_SORT_ORDER);
     }
 
+    /**
+     * @return string
+     */
     public function getBaseApiUrl()
     {
         $mode = $this->getMode();

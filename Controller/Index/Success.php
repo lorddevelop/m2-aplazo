@@ -1,6 +1,6 @@
 <?php
 
-namespace Spro\AplazoPayment\Controller\Ajax;
+namespace Spro\AplazoPayment\Controller\Index;
 
 use Magento\Checkout\Model\Session as CheckoutSession;
 use Magento\Framework\App\Action\Action;

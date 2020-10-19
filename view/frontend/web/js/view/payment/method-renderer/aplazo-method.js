@@ -35,7 +35,7 @@ define([
             let _this = this;
 
             $.ajax({
-                url: url.build('aplazopayment/ajax/transaction'),
+                url: url.build('aplazopayment/index/transaction'),
                 type: 'GET',
                 cache: false,
 

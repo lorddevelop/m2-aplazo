@@ -178,12 +178,19 @@ class Client
     {
         $products = [];
         foreach ($quote->getAllVisibleItems() as $quoteItem) {
+            if ($quoteItem->getProduct()->getTypeId()=='configurable'){
+                $childItem = $quoteItem->getChildren()[0];
+                $image = $this->imageHelperFactory->create()
+                    ->init($childItem->getProduct(), 'product_small_image')->getUrl();
+            } else {
+                $image = $this->imageHelperFactory->create()
+                    ->init($quoteItem->getProduct(), 'product_small_image')->getUrl();
+            }
             $productArr = [
                 "count" => $quoteItem->getQty(),
                 "description" => $quoteItem->getProduct()->getShortDescription(),
                 "id" => $quoteItem->getProduct()->getId(),
-                "imageUrl" => $this->imageHelperFactory->create()
-                    ->init($quoteItem->getProduct(), 'product_small_image')->getUrl(),
+                "imageUrl" => $image,
                 "price" => $quoteItem->getPrice(),
                 "title" => $quoteItem->getName()
             ];
@@ -195,14 +202,14 @@ class Client
                 "price" => $quote->getShippingAddress()->getDiscountAmount(),
                 "title" => $quote->getShippingAddress()->getDiscountDescription()
             ],
-            "errorUrl" => $this->storeManager->getStore()->getUrl('aplazopayment/ajax/fail'),
+            "errorUrl" => $this->storeManager->getStore()->getUrl('aplazopayment/index/error'),
             "products" => $products,
             "shipping" => [
                 "price" => $quote->getShippingAddress()->getShippingAmount(),
-                "title" => $quote->getShippingAddress()->getShippingAmount()
+                "title" => $quote->getShippingAddress()->getShippingDescription()
             ],
             "shopId" => $this->storeManager->getStore()->getName(),
-            "successUrl" => $this->storeManager->getStore()->getUrl('aplazopayment/ajax/create'),
+            "successUrl" => $this->storeManager->getStore()->getUrl('aplazopayment/index/success'),
             "taxes" => [
                 "price" => $quote->getShippingAddress()->getTaxAmount(),
                 "title" => __('Tax')
