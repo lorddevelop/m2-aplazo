@@ -11,7 +11,7 @@ use Psr\Log\LoggerInterface;
 use Spro\AplazoPayment\Client\Client;
 use Spro\AplazoPayment\Helper\Data;
 
-class SingleTransaction extends Action
+class Onplaceorder extends Action
 {
     /**
      * @var Client
@@ -22,7 +22,6 @@ class SingleTransaction extends Action
      * @var LoggerInterface
      */
     protected $_logger;
-
     /**
      * @var CheckoutSession
      */
@@ -39,7 +38,7 @@ class SingleTransaction extends Action
     protected $aplazoHelper;
 
     /**
-     * SingleTransaction constructor.
+     * Transaction constructor.
      * @param Context $context
      * @param CheckoutSession $checkoutSession
      * @param LoggerInterface $logger
@@ -77,26 +76,9 @@ class SingleTransaction extends Action
         try {
             $auth = $this->client->auth();
             $quote = $this->_checkoutSession->getQuote();
-
             if ($auth && is_array($auth)) {
-                $this->leaveLastItem($quote);
-
-                if (!$this->_checkoutSession->getQuote()->getCustomerId()){
-                    $quote->setCustomerIsGuest(true);
-                }
-                $shippingAddress = $quote->getShippingAddress();
-                if (!$shippingAddress || !$shippingAddress->getFirstname()) {
-                    $this->aplazoHelper->fillDummyQuote($quote);
-                }
-                if (!$shippingAddress->getEmail()) {
-                    $shippingAddress->setEmail($this->aplazoHelper->getCustomerEmail());
-                    $quote->getBillingAddress()->setEmail($this->aplazoHelper->getCustomerEmail());
-                }
-
-                $order = $this->quoteManagement->submit($quote);
 
                 $resultUrl = $this->client->create($auth, $quote);
-                $this->setSuccessOrderData($quote, $order);
 
                 if ($resultUrl) {
                     $data = [
@@ -113,34 +95,4 @@ class SingleTransaction extends Action
         return $resultJson;
     }
 
-    /**
-     * @param $quote
-     * @param $order
-     */
-    protected function setSuccessOrderData($quote, $order)
-    {
-        $this->_checkoutSession->setLastSuccessQuoteId($quote->getId());
-        $this->_checkoutSession->setLastQuoteId($quote->getId());
-        $this->_checkoutSession->setLastOrderId($order->getId());
-        $this->_checkoutSession->setLastRealOrderId($order->getIncrementId());
-    }
-
-    protected function leaveLastItem(&$quote)
-    {
-        $quoteItems	=	$this->_checkoutSession->getQuote()->getAllVisibleItems();
-
-        $max = 0;
-        $lastItem = null;
-        foreach ($quoteItems as $item) {
-            if ($item->getId() > $max) {
-                $max = $item->getId();
-                $lastItem = $item;
-            }
-        }
-        foreach ($quoteItems as $item) {
-            if ($item->getId()!=$lastItem->getId()) {
-                $quote->deleteItem($item);
-            }
-        }
-    }
 }

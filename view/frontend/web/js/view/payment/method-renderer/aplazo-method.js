@@ -33,23 +33,24 @@ define([
 
         continueWithAplazo: function (data, event) {
             let _this = this;
-
+            jQuery('body').loader('show');
             $.ajax({
-                url: url.build('aplazopayment/index/transaction'),
+                url: url.build('aplazopayment/index/onplaceorder'),
                 type: 'GET',
                 cache: false,
 
                 success: function (response) {
-
+                    jQuery('body').loader('hide');
                     if (response.error === false && response.redirecturl !== null) {
+                        _this.placeOrder(data, event);
                         let url = response.redirecturl;
                         window.location = url;
-                        _this.placeOrder(data, event);
                     } else {
                         console.log(response);
                     }
                 },
                 error: function (response) {
+                    jQuery('body').loader('hide');
                     console.log(response);
                 }
             });

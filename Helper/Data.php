@@ -60,7 +60,7 @@ class Data extends AbstractHelper
     /**
      * @return string
      */
-    protected function getCustomerEmail()
+    public function getCustomerEmail()
     {
         if ($this->customerSession->isLoggedIn()){
             return $this->customerSession->getCustomer()->getEmail();
@@ -109,9 +109,8 @@ class Data extends AbstractHelper
     /**
      * @param $quote
      */
-    protected function setCustomerDataToQuote(&$quote)
+    public function setCustomerDataToQuote(&$quote)
     {
-        $quote->setCustomerIsGuest(true);
         $quote->setCustomerEmail($this->getCustomerEmail());
     }
 

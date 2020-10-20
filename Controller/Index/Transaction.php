@@ -77,9 +77,17 @@ class Transaction extends Action
             $auth = $this->client->auth();
             $quote = $this->_checkoutSession->getQuote();
             if ($auth && is_array($auth)) {
+
+                if (!$this->_checkoutSession->getQuote()->getCustomerId()){
+                    $quote->setCustomerIsGuest(true);
+                }
                 $shippingAddress = $quote->getShippingAddress();
                 if (!$shippingAddress || !$shippingAddress->getFirstname()) {
                     $this->aplazoHelper->fillDummyQuote($quote);
+                }
+                if (!$shippingAddress->getEmail()) {
+                    $shippingAddress->setEmail($this->aplazoHelper->getCustomerEmail());
+                    $quote->getBillingAddress()->setEmail($this->aplazoHelper->getCustomerEmail());
                 }
 
                 $order = $this->quoteManagement->submit($quote);
