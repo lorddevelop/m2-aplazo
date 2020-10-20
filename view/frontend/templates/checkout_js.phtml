@@ -19,8 +19,9 @@
             },
 
             initEvents: function () {
+                var that = this;
                 $(document).on("click", this.buyWithAplazoId, function() {
-                    this.buyWithAplazoEventClick(this);
+                    that.buyWithAplazoEventClick(this);
                 });
             },
 
