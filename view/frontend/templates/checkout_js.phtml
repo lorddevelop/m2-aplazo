@@ -26,7 +26,6 @@
             },
 
             buyWithAplazoEventClick: function(_this) {
-                return function () {
                     jQuery('body').loader('show');
                     $.ajax({
                         url: _this.aplazoPaymentAjaxUrl,
@@ -48,7 +47,6 @@
                             console.log(response);
                         }
                     });
-                }
             },
         };
 
