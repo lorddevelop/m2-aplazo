@@ -18,6 +18,7 @@ use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Quote\Model\QuoteFactory;
 use Magento\Quote\Model\QuoteManagement;
 use Magento\Sales\Model\Service\InvoiceService;
+use Magento\Framework\DB\TransactionFactory;
 use Psr\Log\LoggerInterface;
 
 class Success extends Action implements HttpGetActionInterface, CsrfAwareActionInterface
@@ -65,7 +66,12 @@ class Success extends Action implements HttpGetActionInterface, CsrfAwareActionI
     protected $invoiceService;
 
     /**
-     * Create constructor.
+     * @var TransactionFactory
+     */
+    protected $transactionFactory;
+
+    /**
+     * Success constructor.
      * @param Context $context
      * @param RedirectFactory $redirectFactory
      * @param JsonFactory $jsonFactory
@@ -74,6 +80,8 @@ class Success extends Action implements HttpGetActionInterface, CsrfAwareActionI
      * @param QuoteFactory $quoteFactory
      * @param LoggerInterface $logger
      * @param QuoteManagement $quoteManagement
+     * @param InvoiceService $invoiceService
+     * @param TransactionFactory $transactionFactory
      */
     public function __construct(
         Context $context,
@@ -84,7 +92,8 @@ class Success extends Action implements HttpGetActionInterface, CsrfAwareActionI
         QuoteFactory $quoteFactory,
         LoggerInterface $logger,
         QuoteManagement $quoteManagement,
-        InvoiceService $invoiceService
+        InvoiceService $invoiceService,
+        TransactionFactory $transactionFactory
     ) {
         $this->_logger = $logger;
         $this->_quoteFactory = $quoteFactory;
@@ -94,6 +103,7 @@ class Success extends Action implements HttpGetActionInterface, CsrfAwareActionI
         $this->_redirectFactory = $redirectFactory;
         $this->quoteManagement = $quoteManagement;
         $this->invoiceService = $invoiceService;
+        $this->transactionFactory = $transactionFactory;
 
         parent::__construct($context);
     }
@@ -139,6 +149,11 @@ class Success extends Action implements HttpGetActionInterface, CsrfAwareActionI
                 $invoice = $this->invoiceService->prepareInvoice($lastOrder);
                 $invoice->setRequestedCaptureCase(\Magento\Sales\Model\Order\Invoice::CAPTURE_ONLINE);
                 $invoice->register();
+                $transaction = $this->transactionFactory->create()
+                    ->addObject($invoice)
+                    ->addObject($invoice->getOrder());
+
+                $transaction->save();
             }
             $result->setUrl('/checkout/onepage/success');
             return $result;
