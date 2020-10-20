@@ -17,6 +17,7 @@ use Magento\Framework\Webapi\Exception;
 use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Quote\Model\QuoteFactory;
 use Magento\Quote\Model\QuoteManagement;
+use Magento\Sales\Model\Service\InvoiceService;
 use Psr\Log\LoggerInterface;
 
 class Success extends Action implements HttpGetActionInterface, CsrfAwareActionInterface
@@ -59,6 +60,11 @@ class Success extends Action implements HttpGetActionInterface, CsrfAwareActionI
     protected $quoteManagement;
 
     /**
+     * @var InvoiceService
+     */
+    protected $invoiceService;
+
+    /**
      * Create constructor.
      * @param Context $context
      * @param RedirectFactory $redirectFactory
@@ -77,7 +83,8 @@ class Success extends Action implements HttpGetActionInterface, CsrfAwareActionI
         CartRepositoryInterface $quoteRepository,
         QuoteFactory $quoteFactory,
         LoggerInterface $logger,
-        QuoteManagement $quoteManagement
+        QuoteManagement $quoteManagement,
+        InvoiceService $invoiceService
     ) {
         $this->_logger = $logger;
         $this->_quoteFactory = $quoteFactory;
@@ -86,6 +93,7 @@ class Success extends Action implements HttpGetActionInterface, CsrfAwareActionI
         $this->_jsonFactory = $jsonFactory;
         $this->_redirectFactory = $redirectFactory;
         $this->quoteManagement = $quoteManagement;
+        $this->invoiceService = $invoiceService;
 
         parent::__construct($context);
     }
@@ -126,8 +134,12 @@ class Success extends Action implements HttpGetActionInterface, CsrfAwareActionI
     {
         $result = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
         try {
-            $quote = $this->_checkoutSession->getQuote();
-            //$order = $this->quoteManagement->submit($quote);
+            $lastOrder = $this->_checkoutSession->getLastRealOrder();
+            if ($lastOrder->canInvoice()){
+                $invoice = $this->invoiceService->prepareInvoice($lastOrder);
+                $invoice->setRequestedCaptureCase(\Magento\Sales\Model\Order\Invoice::CAPTURE_ONLINE);
+                $invoice->register();
+            }
             $result->setUrl('/checkout/onepage/success');
             return $result;
         } catch (\Exception $e) {
