@@ -104,6 +104,8 @@ class Data extends AbstractHelper
         $quote->getBillingAddress()->setStreet('Avenida Paseo de las Palmas, number 755');
         $quote->getShippingAddress()->setTelephone('1234567890');
         $quote->getBillingAddress()->setTelephone('1234567890');
+        $quote->getShippingAddress()->setCollectShippingRates(true)
+            ->collectShippingRates();
     }
 
     /**
