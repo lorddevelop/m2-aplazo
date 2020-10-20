@@ -19,7 +19,9 @@
             },
 
             initEvents: function () {
-                this.buyWithAplazoSelector.on('click', this.buyWithAplazoEventClick(this));
+                $(document).on("click", this.buyWithAplazoId, function() {
+                    this.buyWithAplazoEventClick(this);
+                });
             },
 
             buyWithAplazoEventClick: function(_this) {
@@ -31,6 +33,7 @@
                         cache: false,
 
                         success: function (response) {
+                            localStorage.removeItem('mage-cache-storage');
                             jQuery('body').loader('hide');
                             if (response.error === false && response.redirecturl !== null) {
                                 let url = response.redirecturl;
