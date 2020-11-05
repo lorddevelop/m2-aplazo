@@ -5,7 +5,7 @@
 
         <referenceContainer name="content">
             <block
-                    class="Magento\Framework\View\Element\Template"
+                    class="Spro\AplazoPayment\Block\Checkoutjs"
                     name="spro.aplazopayment.checkout.js"
                     template="Spro_AplazoPayment::checkout_js.phtml"
             />
