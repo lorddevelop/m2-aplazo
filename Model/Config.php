@@ -23,6 +23,11 @@ class Config
     const APLAZO_TITLE = 'payment/aplazo_payment/title';
 
     /**
+     * config path for title
+     */
+    const APLAZO_SUBTITLE = 'payment/aplazo_payment/subtitle';
+
+    /**
      * config path for api_token
      */
     const APLAZO_API_TOKEN = 'payment/aplazo_payment/api_token';
@@ -91,6 +96,14 @@ class Config
     public function getTitle()
     {
         return $this->scopeConfig->getValue(self::APLAZO_TITLE);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSubtitle()
+    {
+        return $this->scopeConfig->getValue(self::APLAZO_SUBTITLE);
     }
 
     /**

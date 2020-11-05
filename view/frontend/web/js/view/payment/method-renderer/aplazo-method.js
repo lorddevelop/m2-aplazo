@@ -26,6 +26,10 @@ define([
             return true;
         },
 
+        getSubtitle: function(){
+            return aplazoSubtitle;
+        },
+
         validate: function() {
             var $form = $('#' + this.getCode() + '-form');
             return true;

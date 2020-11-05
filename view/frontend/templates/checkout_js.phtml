@@ -1,4 +1,12 @@
+<?php
+/**
+ * \Spro\AplazoPayment\Block\Checkoutjs $block
+ */
+?>
 <script type="text/javascript">
+
+    var aplazoSubtitle = '<?php echo $block->getSubtitle(); ?>';
+
     require([
         'jquery',
         'mage/url'

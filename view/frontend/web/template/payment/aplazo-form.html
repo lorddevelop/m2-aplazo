@@ -18,6 +18,7 @@
         <!--/ko-->
         <fieldset class="fieldset" data-bind='attr: {id: "payment_form_" + getCode()}'>
             <div class="payment-method-note">
+                <span data-bind="text: getSubtitle()"></span>
                 <!-- ko i18n: 'You will be redirected to the Aplazo website.' --><!-- /ko -->
             </div>
         </fieldset>
